@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🧰 Using five tools to manage one job?
 
-(Write post copy here for fb-016)
-👉 https://www.builderpulse.ca
+BuilderPulseAI replaces tool overload with one system built for construction.
 
+✅ Jobs, docs & time in one place  
+✅ Less switching  
+✅ Cleaner workflows  
+✅ Better focus  
+
+🧠 Simpler systems  
+⏱️ Faster days  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 See how it works:
+https://www.builderpulse.ca
