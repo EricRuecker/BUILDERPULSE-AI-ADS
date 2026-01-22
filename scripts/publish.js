@@ -60,6 +60,16 @@ function updateFrontMatter(file, updates) {
   fs.writeFileSync(file, rebuilt);
 }
 
+async function whoAmI() {
+  const res = await fetch(
+    `https://graph.facebook.com/v24.0/me?access_token=${encodeURIComponent(FB_PAGE_ACCESS_TOKEN)}`
+  );
+  const json = await res.json();
+  console.log("[DEBUG] /me =", JSON.stringify(json));
+}
+
+
+
 async function postToFacebook(message) {
   const res = await fetch(
     `https://graph.facebook.com/v24.0/${FB_PAGE_ID}/feed`,
