@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+📄 Chasing paperwork is a waste of skilled time.
 
-(Write post copy here for fb-012)
-👉 https://www.builderpulse.ca
+BuilderPulseAI keeps documents, timecards, and costs tied to the job — where they belong.
 
+✅ One source of truth  
+✅ Cleaner handoffs  
+✅ Less rework  
+✅ Better accountability  
+
+⏱️ Save time  
+📂 Stay organized  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Learn more:
+https://www.builderpulse.ca
