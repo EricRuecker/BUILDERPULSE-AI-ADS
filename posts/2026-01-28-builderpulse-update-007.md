@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+📈 Adding crews without better systems is how margins disappear.
 
-(Write post copy here for fb-007)
-👉 https://www.builderpulse.ca
+BuilderPulseAI helps you scale without adding more admin chaos.
 
+✅ Job-based organization  
+✅ Time & cost tracking  
+✅ Clear accountability  
+✅ Built to grow with you  
+
+🧱 Keep crews productive  
+💰 Stay profitable  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Request a demo:
+https://www.builderpulse.ca
