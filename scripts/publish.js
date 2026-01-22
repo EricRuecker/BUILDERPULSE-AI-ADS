@@ -102,6 +102,7 @@ function commit(file) {
     const { meta, body } = parseFrontMatter(fs.readFileSync(file, "utf8"));
     if (meta.status === "ready" && meta.platforms?.includes("facebook")) {
       console.log(`Posting ${file}`);
+      await whoAmI();
       const id = await postToFacebook(body);
       updateFrontMatter(file, {
         status: "posted",
