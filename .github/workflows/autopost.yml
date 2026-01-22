@@ -3,7 +3,8 @@ name: BuilderPulse Autopost
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 16 * * *"
+    - cron: "30 15 * * *"  # 7:30 AM BC time (PST)
+    - cron: "30 23 * * *"  # 3:30 PM BC time (PST)
 
 permissions:
   contents: write
@@ -33,4 +34,5 @@ jobs:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           node scripts/publish.js
+
 
