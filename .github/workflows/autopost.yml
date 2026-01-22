@@ -16,6 +16,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Heartbeat (keep scheduler alive)
+        run: |
+          mkdir -p .github
+          date -u +"%Y-%m-%d %H:%M:%S UTC" > .github/heartbeat.txt
+          git add .github/heartbeat.txt
+          git commit -m "chore: heartbeat" || echo "No changes"
+          git push || echo "No push"
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -34,5 +42,4 @@ jobs:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           node scripts/publish.js
-
 
