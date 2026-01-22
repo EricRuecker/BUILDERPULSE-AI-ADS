@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+⏱️ Time tracking shouldn’t be a headache.
 
-(Write post copy here for fb-005)
-👉 https://www.builderpulse.ca
+BuilderPulseAI makes it easy to track crew hours by job — without spreadsheets or guesswork.
 
+✅ Simple timecards  
+✅ Job-based tracking  
+✅ Payroll & accounting ready  
+✅ Clear labor visibility  
+
+💰 Know where your hours go  
+📊 Control labor costs  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Book a demo:
+https://www.builderpulse.ca
