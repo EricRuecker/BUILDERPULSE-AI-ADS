@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🏢 An organized office keeps jobs moving.
 
-(Write post copy here for fb-029)
-👉 https://www.builderpulse.ca
+BuilderPulseAI reduces admin bottlenecks so projects don’t stall.
 
+✅ Faster answers  
+✅ Cleaner records  
+✅ Less back-and-forth  
+✅ Better support for crews  
+
+⏱️ Save office time  
+🧱 Keep jobs moving  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Book a demo:
+https://www.builderpulse.ca
