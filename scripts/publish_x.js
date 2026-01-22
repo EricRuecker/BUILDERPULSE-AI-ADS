@@ -1,33 +1,19 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
-import OAuth from "oauth-1.0a";
 import crypto from "crypto";
-import fetch from "node-fetch";
 
 const POSTS_DIR = "posts";
 
-const {
-  X_API_KEY,
-  X_API_SECRET,
-  X_ACCESS_TOKEN,
-  X_ACCESS_TOKEN_SECRET,
-} = process.env;
+const API_KEY = process.env.X_API_KEY || "";
+const API_SECRET = process.env.X_API_SECRET || "";
+const ACCESS_TOKEN = process.env.X_ACCESS_TOKEN || "";
+const ACCESS_SECRET = process.env.X_ACCESS_TOKEN_SECRET || "";
 
-// Hard fail early if secrets are missing
-if (!X_API_KEY) throw new Error("Missing X_API_KEY");
-if (!X_API_SECRET) throw new Error("Missing X_API_SECRET");
-if (!X_ACCESS_TOKEN) throw new Error("Missing X_ACCESS_TOKEN");
-if (!X_ACCESS_TOKEN_SECRET) throw new Error("Missing X_ACCESS_TOKEN_SECRET");
-
-// OAuth 1.0a setup
-const oauth = new OAuth({
-  consumer: { key: X_API_KEY, secret: X_API_SECRET },
-  signature_method: "HMAC-SHA1",
-  hash_function(base_string, key) {
-    return crypto.createHmac("sha1", key).update(base_string).digest("base64");
-  },
-});
+if (!API_KEY) throw new Error("Missing X_API_KEY");
+if (!API_SECRET) throw new Error("Missing X_API_SECRET");
+if (!ACCESS_TOKEN) throw new Error("Missing X_ACCESS_TOKEN");
+if (!ACCESS_SECRET) throw new Error("Missing X_ACCESS_TOKEN_SECRET");
 
 function listMarkdownFiles(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -40,20 +26,15 @@ function listMarkdownFiles(dir) {
 
 function parseFrontMatter(text) {
   const lines = text.split(/\r?\n/);
-  if (lines[0] !== "---") return { meta: {}, body: text };
+  if (lines[0] !== "---") return { meta: {}, body: text.trim() };
 
   let i = 1;
   const meta = {};
   for (; i < lines.length; i++) {
     if (lines[i] === "---") break;
     const idx = lines[i].indexOf(":");
-    if (idx !== -1) {
-      meta[lines[i].slice(0, idx).trim()] = lines[i]
-        .slice(idx + 1)
-        .trim();
-    }
+    if (idx !== -1) meta[lines[i].slice(0, idx).trim()] = lines[i].slice(idx + 1).trim();
   }
-
   return { meta, body: lines.slice(i + 1).join("\n").trim() };
 }
 
@@ -77,41 +58,85 @@ function updateFrontMatter(file, updates) {
     ...lines.slice(end + 1),
   ].join("\n");
 
-  fs.writeFileSync(file, rebuilt);
+  fs.writeFileSync(file, rebuilt, "utf8");
+}
+
+function percentEncode(str) {
+  return encodeURIComponent(str)
+    .replace(/[!'()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase());
+}
+
+function oauthNonce() {
+  return crypto.randomBytes(16).toString("hex");
+}
+
+function oauthTimestamp() {
+  return Math.floor(Date.now() / 1000).toString();
+}
+
+function buildOAuthHeader({ method, url, extraParams = {} }) {
+  const oauthParams = {
+    oauth_consumer_key: API_KEY,
+    oauth_nonce: oauthNonce(),
+    oauth_signature_method: "HMAC-SHA1",
+    oauth_timestamp: oauthTimestamp(),
+    oauth_token: ACCESS_TOKEN,
+    oauth_version: "1.0",
+  };
+
+  // Signature base params include oauth params + any request params
+  const allParams = { ...oauthParams, ...extraParams };
+
+  const paramString = Object.keys(allParams)
+    .sort()
+    .map((k) => `${percentEncode(k)}=${percentEncode(allParams[k])}`)
+    .join("&");
+
+  const baseString = [
+    method.toUpperCase(),
+    percentEncode(url),
+    percentEncode(paramString),
+  ].join("&");
+
+  const signingKey = `${percentEncode(API_SECRET)}&${percentEncode(ACCESS_SECRET)}`;
+  const signature = crypto.createHmac("sha1", signingKey).update(baseString).digest("base64");
+
+  const headerParams = { ...oauthParams, oauth_signature: signature };
+
+  return (
+    "OAuth " +
+    Object.keys(headerParams)
+      .sort()
+      .map((k) => `${percentEncode(k)}="${percentEncode(headerParams[k])}"`)
+      .join(", ")
+  );
 }
 
 async function postToX(text) {
+  // X supports both api.x.com and api.twitter.com; use api.x.com for consistency
   const url = "https://api.x.com/2/tweets";
+  const method = "POST";
 
-  const requestData = {
-    url,
-    method: "POST",
-    data: { text },
-  };
-
-  const token = {
-    key: X_ACCESS_TOKEN,
-    secret: X_ACCESS_TOKEN_SECRET,
-  };
-
-  const headers = oauth.toHeader(oauth.authorize(requestData, token));
-  headers["Content-Type"] = "application/json";
+  const auth = buildOAuthHeader({ method, url });
 
   const res = await fetch(url, {
-    method: "POST",
-    headers,
+    method,
+    headers: {
+      Authorization: auth,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ text }),
   });
 
   const json = await res.json();
   if (!res.ok) throw new Error(JSON.stringify(json));
-  return json.data.id;
+  return json?.data?.id;
 }
 
 function commit(file) {
   execSync(`git config user.name "builderpulse-bot"`);
   execSync(`git config user.email "actions@github.com"`);
-  execSync(`git add ${file}`);
+  execSync(`git add "${file}"`);
   execSync(`git commit -m "Mark X post as published"`);
   execSync(`git push`);
 }
@@ -127,21 +152,25 @@ function commit(file) {
     const wantsX = platforms.includes("x");
 
     if (isReady && wantsX) {
-      console.log(`Posting X: ${file}`);
+      console.log(`Posting to X: ${file}`);
 
-      const id = await postToX(body);
+      // Safety: X max 280 chars (links count differently, but keep it safe)
+      const text = body.trim().slice(0, 275);
+
+      const id = await postToX(text);
 
       updateFrontMatter(file, {
         status: "posted",
-        x_post_id: id,
         posted_at: new Date().toISOString(),
+        x_post_id: id,
       });
 
       commit(file);
-      console.log("X post published:", id);
+      console.log("Posted successfully:", id);
       return;
     }
   }
 
   console.log("No ready X posts found.");
 })();
+
