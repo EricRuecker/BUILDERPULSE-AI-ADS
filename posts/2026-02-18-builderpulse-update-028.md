@@ -1,0 +1,11 @@
+---
+id: fb-028
+platforms: [facebook]
+status: ready
+---
+
+🚀 BuilderPulseAI is live.
+
+(Write post copy here for fb-028)
+👉 https://www.builderpulse.ca
+
