@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+⚠️ Small mistakes add up fast in construction.
 
-(Write post copy here for fb-025)
-👉 https://www.builderpulse.ca
+BuilderPulseAI helps reduce errors by keeping information organized and accessible.
 
+✅ One source of truth  
+✅ Clear job context  
+✅ Better coordination  
+✅ Less rework  
+
+💰 Protect your margins  
+🧠 Stay organized  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Book a demo:
+https://www.builderpulse.ca
