@@ -1,0 +1,22 @@
+name: BuilderPulse Autopost (Dry Run)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 16 * * *" # 16:00 UTC ~= morning in Vancouver (adjust later)
+
+jobs:
+  dry_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dry run
+        run: |
+          node scripts/publish.js --dry-run
