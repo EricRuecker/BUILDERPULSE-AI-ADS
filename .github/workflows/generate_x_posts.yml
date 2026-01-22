@@ -26,71 +26,87 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate X markdown posts
+      - name: Generate X markdown posts (Python)
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p posts
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          from datetime import datetime, timedelta, timezone
 
-          COUNT="${{ github.event.inputs.count }}"
-          PREFIX="${{ github.event.inputs.prefix }}"
-          START="${{ github.event.inputs.start_date }}"
+          posts_dir = Path("posts")
+          posts_dir.mkdir(parents=True, exist_ok=True)
 
-          if [ -z "$START" ]; then
-            START="$(date -u -d "tomorrow" +%F)"
-          fi
+          count = int(os.environ.get("COUNT", "30"))
+          prefix = os.environ.get("PREFIX", "x").strip()
 
-          # Find next numeric id (x-###) from existing files
-          NEXT_NUM=$(grep -RhoE "^id:\s*${PREFIX}-[0-9]+" posts/*.md 2>/dev/null \
-            | sed -E "s/.*${PREFIX}-([0-9]+)/\1/" \
-            | sort -n | tail -1 || true)
+          start = os.environ.get("START", "").strip()
+          now = datetime.now(timezone.utc)
+          if not start:
+            start_date = (now + timedelta(days=1)).date()
+          else:
+            start_date = datetime.strptime(start, "%Y-%m-%d").date()
 
-          if [ -z "${NEXT_NUM:-}" ]; then NEXT_NUM=0; fi
+          # Find next numeric id from existing posts (id: x-###)
+          next_num = 0
+          id_re = re.compile(rf"^id:\s*{re.escape(prefix)}-(\d+)\s*$", re.IGNORECASE)
 
-          # Short X copy templates (keep under 280)
-          TEMPLATES=(
-"Builders: stop chasing drawings + texts. BuilderPulseAI keeps jobs organized. Demo: https://www.builderpulse.ca #construction #builders"
-"Spreadsheets don’t run job sites. BuilderPulseAI centralizes docs + tracking so you save hours weekly. https://www.builderpulse.ca #contractor"
-"Less admin, more building. BuilderPulseAI helps you organize projects fast. https://www.builderpulse.ca #constructionmanagement"
-"Job costing starts with visibility. BuilderPulseAI helps you track time + docs in one place. https://www.builderpulse.ca #builder"
-"Plans everywhere? Put them in one place. BuilderPulseAI = clean job organization. https://www.builderpulse.ca #construction"
-"Early onboarding: $299/mo (reg $499). Built by a builder. https://www.builderpulse.ca #construction #saas"
-"Your crew shouldn’t wait on info. BuilderPulseAI makes docs accessible in field + office. https://www.builderpulse.ca #fieldops"
-"Reduce rework: keep the latest drawing handy. BuilderPulseAI organizes revisions. https://www.builderpulse.ca #contractorlife"
-"Timecards shouldn’t be chaos. BuilderPulseAI simplifies tracking by job. https://www.builderpulse.ca #payroll"
-"Stop duct-taping systems. BuilderPulseAI replaces spreadsheets + scattered files. https://www.builderpulse.ca #constructiontech"
-          )
-
-          for i in $(seq 1 "$COUNT"); do
-            NUM=$((NEXT_NUM + i))
-            ID=$(printf "%s-%03d" "$PREFIX" "$NUM")
-            DATE=$(date -u -d "$START +$((i-1)) day" +%F)
-            SLUG=$(printf "x-update-%03d" "$NUM")
-            FILE="posts/${DATE}-${SLUG}.md"
-
-            if [ -f "$FILE" ]; then
-              echo "Skip exists: $FILE"
+          for md in posts_dir.glob("*.md"):
+            try:
+              txt = md.read_text(encoding="utf-8")
+            except Exception:
               continue
-            fi
+            for line in txt.splitlines():
+              m = id_re.match(line.strip())
+              if m:
+                next_num = max(next_num, int(m.group(1)))
 
-            # Rotate templates
-            IDX=$(( (i-1) % ${#TEMPLATES[@]} ))
-            BODY="${TEMPLATES[$IDX]}"
+          templates = [
+            "Builders: stop chasing drawings + texts. BuilderPulseAI keeps jobs organized. Demo: https://www.builderpulse.ca #construction #builders",
+            "Spreadsheets don’t run job sites. BuilderPulseAI centralizes docs + tracking so you save hours weekly. https://www.builderpulse.ca #contractor",
+            "Less admin, more building. BuilderPulseAI helps you organize projects fast. https://www.builderpulse.ca #constructionmanagement",
+            "Job visibility = job profitability. BuilderPulseAI helps track time + docs in one place. https://www.builderpulse.ca #builder",
+            "Plans everywhere? Put them in one place. BuilderPulseAI keeps job docs clean + accessible. https://www.builderpulse.ca #construction",
+            "Early onboarding: $299/mo (reg $499). Built by a builder. https://www.builderpulse.ca #constructiontech",
+            "Your crew shouldn’t wait on info. BuilderPulseAI makes docs accessible in field + office. https://www.builderpulse.ca #fieldops",
+            "Reduce rework: keep the latest drawing handy. BuilderPulseAI organizes revisions. https://www.builderpulse.ca #contractorlife",
+            "Timecards shouldn’t be chaos. BuilderPulseAI simplifies tracking by job. https://www.builderpulse.ca #payroll",
+            "Stop duct-taping systems. BuilderPulseAI replaces spreadsheets + scattered files. https://www.builderpulse.ca #constructiontech",
+          ]
 
-            # Hard trim to 275 chars (safety buffer)
-            BODY_TRIM="$(echo -n "$BODY" | cut -c1-275)"
+          def trim_280(s: str) -> str:
+            s = s.replace("\u200b", "").strip()
+            return s[:275].rstrip()  # safety buffer
 
-            cat > "$FILE" <<EOF
----
-id: $ID
+          created = 0
+          for i in range(1, count + 1):
+            num = next_num + i
+            post_id = f"{prefix}-{num:03d}"
+            date = start_date + timedelta(days=i-1)
+            slug = f"x-update-{num:03d}"
+            file = posts_dir / f"{date.isoformat()}-{slug}.md"
+            if file.exists():
+              continue
+
+            body = trim_280(templates[(i-1) % len(templates)])
+            content = f"""---
+id: {post_id}
 platforms: [x]
 status: ready
 ---
 
-$BODY_TRIM
-EOF
-            echo "Created: $FILE"
-          done
+{body}
+"""
+            file.write_text(content, encoding="utf-8")
+            created += 1
+
+          print(f"Created {created} X post file(s).")
+          PY
+        env:
+          COUNT: ${{ github.event.inputs.count }}
+          PREFIX: ${{ github.event.inputs.prefix }}
+          START: ${{ github.event.inputs.start_date }}
 
       - name: Commit files
         run: |
