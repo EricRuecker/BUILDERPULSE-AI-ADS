@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+📱 Your office and field should always be on the same page.
 
-(Write post copy here for fb-008)
-👉 https://www.builderpulse.ca
+BuilderPulseAI keeps everyone working from the same information — no confusion.
 
+✅ Desktop + mobile access  
+✅ Updated drawings  
+✅ Job-based time tracking  
+✅ Cleaner communication  
+
+⚙️ Fewer mistakes  
+📂 Less back-and-forth  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Learn more:
+https://www.builderpulse.ca
