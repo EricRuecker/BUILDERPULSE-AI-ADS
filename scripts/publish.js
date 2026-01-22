@@ -6,6 +6,12 @@ const POSTS_DIR = "posts";
 const FB_PAGE_ID = process.env.FB_PAGE_ID || "";
 const FB_PAGE_ACCESS_TOKEN = process.env.FB_PAGE_ACCESS_TOKEN || "";
 
+console.log("[DEBUG] FB_PAGE_ID:", FB_PAGE_ID || "(missing)");
+console.log("[DEBUG] token length:", FB_PAGE_ACCESS_TOKEN ? FB_PAGE_ACCESS_TOKEN.length : 0);
+console.log("[DEBUG] token starts with:", FB_PAGE_ACCESS_TOKEN ? FB_PAGE_ACCESS_TOKEN.slice(0, 6) : "(missing)");
+
+
+
 function listMarkdownFiles(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir)
