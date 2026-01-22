@@ -41,16 +41,16 @@ jobs:
           fi
 
           # Find the next numeric id (fb-###) based on existing files
-          NEXT_NUM=$(grep -RhoE '^id:\s*'"$PREFIX"'-[0-9]+' posts/*.md 2>/dev/null \
+          NEXT_NUM="$(grep -RhoE '^id:\s*'"$PREFIX"'-[0-9]+' posts/*.md 2>/dev/null \
             | sed -E 's/.*'"$PREFIX"'-([0-9]+)/\1/' \
-            | sort -n | tail -1)
-          if [ -z "${NEXT_NUM:-}" ]; then NEXT_NUM=0; fi
+            | sort -n | tail -1 || true)"
+          if [ -z "${NEXT_NUM}" ]; then NEXT_NUM=0; fi
 
           for i in $(seq 1 "$COUNT"); do
             NUM=$((NEXT_NUM + i))
-            ID=$(printf "%s-%03d" "$PREFIX" "$NUM")
-            DATE=$(date -u -d "$START +$((i-1)) day" +%F)
-            SLUG=$(printf "builderpulse-update-%03d" "$NUM")
+            ID="$(printf "%s-%03d" "$PREFIX" "$NUM")"
+            DATE="$(date -u -d "$START +$((i-1)) day" +%F)"
+            SLUG="$(printf "builderpulse-update-%03d" "$NUM")"
 
             FILE="posts/${DATE}-${SLUG}.md"
             if [ -f "$FILE" ]; then
@@ -58,18 +58,20 @@ jobs:
               continue
             fi
 
-            cat > "$FILE" <<EOF
----
-id: $ID
-platforms: [facebook]
-status: ready
----
+            printf '%s\n' \
+              '---' \
+              "id: $ID" \
+              'platforms: [facebook]' \
+              'status: ready' \
+              '---' \
+              '' \
+              '🚀 BuilderPulseAI is live.' \
+              '' \
+              "(Write post copy here for $ID)" \
+              '👉 https://www.builderpulse.ca' \
+              '' \
+              > "$FILE"
 
-🚀 BuilderPulseAI is live.
-
-(Write post copy here for $ID)
-👉 https://www.builderpulse.ca
-EOF
             echo "Created: $FILE"
           done
 
