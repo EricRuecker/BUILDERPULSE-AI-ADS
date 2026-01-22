@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+💰 Profitable jobs start with visibility.
 
-(Write post copy here for fb-028)
-👉 https://www.builderpulse.ca
+BuilderPulseAI helps you understand where time and money are really going.
 
+✅ Track labor by job  
+✅ See cost trends  
+✅ Catch issues early  
+✅ Make smarter calls  
+
+📊 Better insight  
+📉 Fewer surprises  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Learn more:
+https://www.builderpulse.ca
