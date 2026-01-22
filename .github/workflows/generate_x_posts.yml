@@ -21,15 +21,18 @@ permissions:
 
 jobs:
   generate:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Generate X markdown posts (Python)
-        shell: bash
+        env:
+          COUNT: ${{ github.event.inputs.count }}
+          PREFIX: ${{ github.event.inputs.prefix }}
+          START: ${{ github.event.inputs.start_date }}
         run: |
-          set -euo pipefail
           python - <<'PY'
           import os, re
           from pathlib import Path
@@ -40,15 +43,15 @@ jobs:
 
           count = int(os.environ.get("COUNT", "30"))
           prefix = os.environ.get("PREFIX", "x").strip()
-
           start = os.environ.get("START", "").strip()
+
           now = datetime.now(timezone.utc)
           if not start:
             start_date = (now + timedelta(days=1)).date()
           else:
             start_date = datetime.strptime(start, "%Y-%m-%d").date()
 
-          # Find next numeric id from existing posts (id: x-###)
+          # Find next numeric id (id: x-###) from existing posts
           next_num = 0
           id_re = re.compile(rf"^id:\s*{re.escape(prefix)}-(\d+)\s*$", re.IGNORECASE)
 
@@ -90,28 +93,25 @@ jobs:
               continue
 
             body = trim_280(templates[(i-1) % len(templates)])
-            content = f"""---
-id: {post_id}
-platforms: [x]
-status: ready
----
-
-{body}
-"""
+            content = (
+              f"---\n"
+              f"id: {post_id}\n"
+              f"platforms: [x]\n"
+              f"status: ready\n"
+              f"---\n\n"
+              f"{body}\n"
+            )
             file.write_text(content, encoding="utf-8")
             created += 1
 
           print(f"Created {created} X post file(s).")
           PY
-        env:
-          COUNT: ${{ github.event.inputs.count }}
-          PREFIX: ${{ github.event.inputs.prefix }}
-          START: ${{ github.event.inputs.start_date }}
 
       - name: Commit files
         run: |
           git config user.name "actions-user"
           git config user.email "actions@users.noreply.github.com"
-          git add posts/*.md || true
+          git add posts/*.md 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Generate X post templates"
           git push
+
