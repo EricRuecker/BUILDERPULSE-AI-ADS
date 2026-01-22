@@ -1,0 +1,31 @@
+name: BuilderPulse X Autopost
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 15 * * *"  # 7:30 AM BC (PST)
+    - cron: "30 23 * * *"  # 3:30 PM BC (PST)
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Publish to X
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          node scripts/publish_x.js
