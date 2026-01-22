@@ -1,12 +1,15 @@
-name: BuilderPulse Autopost (Dry Run)
+name: BuilderPulse Autopost
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 16 * * *" # 16:00 UTC ~= morning in Vancouver (adjust later)
+    - cron: "0 16 * * *"
+
+permissions:
+  contents: write
 
 jobs:
-  dry_run:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -17,6 +20,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Dry run
+      - name: Publish to Facebook
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
-          node scripts/publish.js --dry-run
+          node scripts/publish.js
