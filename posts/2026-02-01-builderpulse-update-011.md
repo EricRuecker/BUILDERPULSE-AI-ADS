@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🔨 Software built by people who’ve actually run jobs makes a difference.
 
-(Write post copy here for fb-011)
-👉 https://www.builderpulse.ca
+BuilderPulseAI is designed around how construction really works — not accounting theory.
 
+✅ Practical workflows  
+✅ Job-focused tools  
+✅ Real-world usability  
+✅ No unnecessary fluff  
+
+👷 Built by a builder  
+🏗️ Designed for real jobs  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Request a demo:
+https://www.builderpulse.ca
