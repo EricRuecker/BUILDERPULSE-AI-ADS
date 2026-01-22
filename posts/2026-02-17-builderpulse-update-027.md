@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🧷 Duct-taped systems break under pressure.
 
-(Write post copy here for fb-027)
-👉 https://www.builderpulse.ca
+BuilderPulseAI replaces patchwork workflows with one organized platform.
 
+✅ Jobs, docs & time together  
+✅ Fewer workarounds  
+✅ Cleaner handoffs  
+✅ Better flow  
+
+🧠 Simplify operations  
+⚙️ Stay in control  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Request a demo:
+https://www.builderpulse.ca
