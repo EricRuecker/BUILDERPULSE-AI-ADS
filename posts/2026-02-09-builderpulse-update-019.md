@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+👷 New hires shouldn’t slow the whole job down.
 
-(Write post copy here for fb-019)
-👉 https://www.builderpulse.ca
+BuilderPulseAI makes it easier to onboard people into your workflow.
 
+✅ Clear job structure  
+✅ Easy access to info  
+✅ Less tribal knowledge  
+✅ Faster ramp-up  
+
+📈 Scale smarter  
+🧱 Keep productivity up  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Book a demo:
+https://www.builderpulse.ca
