@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🔥 Constant firefighting usually means broken systems.
 
-(Write post copy here for fb-022)
-👉 https://www.builderpulse.ca
+BuilderPulseAI helps you move from reactive to organized.
 
+✅ Structured workflows  
+✅ Clear job info  
+✅ Fewer emergencies  
+✅ Better planning  
+
+🧠 Less stress  
+⏱️ More control  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Learn more:
+https://www.builderpulse.ca
