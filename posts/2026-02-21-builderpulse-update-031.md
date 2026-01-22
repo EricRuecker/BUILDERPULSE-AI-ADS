@@ -4,8 +4,21 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🚀 If you’re ready to run jobs with less chaos, it’s time.
 
-(Write post copy here for fb-031)
-👉 https://www.builderpulse.ca
+BuilderPulseAI brings construction workflows into one clean, practical platform.
 
+✅ Documents  
+✅ Time tracking  
+✅ Cost visibility  
+✅ Built for real builders  
+
+⏱️ Save time  
+💰 Reduce waste  
+📂 Stay organized  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Request your free demo:
+https://www.builderpulse.ca
