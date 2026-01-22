@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+✅ Confidence comes from knowing your numbers and documents are solid.
 
-(Write post copy here for fb-030)
-👉 https://www.builderpulse.ca
+BuilderPulseAI gives you that confidence — without extra admin work.
 
+✅ Reliable job data  
+✅ Clear documentation  
+✅ Time & cost tracking  
+✅ Fewer unknowns  
+
+🧠 Make decisions faster  
+💰 Protect margins  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 See it in action:
+https://www.builderpulse.ca
