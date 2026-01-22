@@ -1,0 +1,101 @@
+name: Generate X Post Files
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "How many X posts to generate"
+        required: true
+        default: "30"
+      start_date:
+        description: "Start date (YYYY-MM-DD). Leave blank = tomorrow (UTC)."
+        required: false
+        default: ""
+      prefix:
+        description: "ID prefix"
+        required: false
+        default: "x"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate X markdown posts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p posts
+
+          COUNT="${{ github.event.inputs.count }}"
+          PREFIX="${{ github.event.inputs.prefix }}"
+          START="${{ github.event.inputs.start_date }}"
+
+          if [ -z "$START" ]; then
+            START="$(date -u -d "tomorrow" +%F)"
+          fi
+
+          # Find next numeric id (x-###) from existing files
+          NEXT_NUM=$(grep -RhoE "^id:\s*${PREFIX}-[0-9]+" posts/*.md 2>/dev/null \
+            | sed -E "s/.*${PREFIX}-([0-9]+)/\1/" \
+            | sort -n | tail -1 || true)
+
+          if [ -z "${NEXT_NUM:-}" ]; then NEXT_NUM=0; fi
+
+          # Short X copy templates (keep under 280)
+          TEMPLATES=(
+"Builders: stop chasing drawings + texts. BuilderPulseAI keeps jobs organized. Demo: https://www.builderpulse.ca #construction #builders"
+"Spreadsheets don’t run job sites. BuilderPulseAI centralizes docs + tracking so you save hours weekly. https://www.builderpulse.ca #contractor"
+"Less admin, more building. BuilderPulseAI helps you organize projects fast. https://www.builderpulse.ca #constructionmanagement"
+"Job costing starts with visibility. BuilderPulseAI helps you track time + docs in one place. https://www.builderpulse.ca #builder"
+"Plans everywhere? Put them in one place. BuilderPulseAI = clean job organization. https://www.builderpulse.ca #construction"
+"Early onboarding: $299/mo (reg $499). Built by a builder. https://www.builderpulse.ca #construction #saas"
+"Your crew shouldn’t wait on info. BuilderPulseAI makes docs accessible in field + office. https://www.builderpulse.ca #fieldops"
+"Reduce rework: keep the latest drawing handy. BuilderPulseAI organizes revisions. https://www.builderpulse.ca #contractorlife"
+"Timecards shouldn’t be chaos. BuilderPulseAI simplifies tracking by job. https://www.builderpulse.ca #payroll"
+"Stop duct-taping systems. BuilderPulseAI replaces spreadsheets + scattered files. https://www.builderpulse.ca #constructiontech"
+          )
+
+          for i in $(seq 1 "$COUNT"); do
+            NUM=$((NEXT_NUM + i))
+            ID=$(printf "%s-%03d" "$PREFIX" "$NUM")
+            DATE=$(date -u -d "$START +$((i-1)) day" +%F)
+            SLUG=$(printf "x-update-%03d" "$NUM")
+            FILE="posts/${DATE}-${SLUG}.md"
+
+            if [ -f "$FILE" ]; then
+              echo "Skip exists: $FILE"
+              continue
+            fi
+
+            # Rotate templates
+            IDX=$(( (i-1) % ${#TEMPLATES[@]} ))
+            BODY="${TEMPLATES[$IDX]}"
+
+            # Hard trim to 275 chars (safety buffer)
+            BODY_TRIM="$(echo -n "$BODY" | cut -c1-275)"
+
+            cat > "$FILE" <<EOF
+---
+id: $ID
+platforms: [x]
+status: ready
+---
+
+$BODY_TRIM
+EOF
+            echo "Created: $FILE"
+          done
+
+      - name: Commit files
+        run: |
+          git config user.name "actions-user"
+          git config user.email "actions@users.noreply.github.com"
+          git add posts/*.md
+          git diff --staged --quiet || git commit -m "Generate X post templates"
+          git push
