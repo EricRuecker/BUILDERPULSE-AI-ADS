@@ -4,8 +4,20 @@ platforms: [facebook]
 status: ready
 ---
 
-🚀 BuilderPulseAI is live.
+🧭 Running jobs without clear visibility is stressful.
 
-(Write post copy here for fb-023)
-👉 https://www.builderpulse.ca
+BuilderPulseAI gives you a clear picture of each job — without digging through folders or emails.
 
+✅ Centralized job info  
+✅ Clear documentation  
+✅ Time & cost awareness  
+✅ Fewer surprises  
+
+📊 Better decisions  
+⏱️ Less stress  
+
+🚀 Early On-Boarding Special  
+$299/month (regular $499)
+
+👉 Request a free demo:
+https://www.builderpulse.ca
