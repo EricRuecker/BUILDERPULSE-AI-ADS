@@ -1,12 +1,13 @@
-
 ---
-id: bp-001
-platforms: [facebook, instagram]
-status: draft
+id: fb-001
+platforms: [facebook]
+status: ready
 ---
 
-BuilderPulseAI is built for builders who are done wasting time on manual takeoffs.
+🚀 BuilderPulseAI is live.
 
-Automated drawings. Smarter workflows. Real results.
+We’re automating takeoffs, DWG processing, and prefab workflows so builders stop wasting time on manual work.
+
+Built by a builder. Designed for real jobs.
 
 👉 https://www.builderpulse.ca
