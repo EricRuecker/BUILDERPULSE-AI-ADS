@@ -59,6 +59,16 @@ jobs:
             echo "Token check failed"
             exit 1
           fi
+      - name: Verify token has publish permissions
+        env:
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          TOKEN_CLEAN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
+          echo "Checking token permissions..."
+          curl -sS --get \
+            --data-urlencode "access_token=$TOKEN_CLEAN" \
+            "https://graph.facebook.com/v24.0/me/permissions" | cat
+          echo
 
 
 
