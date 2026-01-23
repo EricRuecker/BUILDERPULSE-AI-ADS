@@ -94,7 +94,7 @@ function moveToPosted(filePath) {
 
 async function main() {
   if (!IG_BUSINESS_ID) throw new Error("Missing env IG_BUSINESS_ID (GitHub secret).");
-  if (!FB_PAGE_ACCESS_TOKEN) throw new Error("Missing env FB_PAGE_ACCESS_TOKEN (GitHub secret).");
+  if (!IG_ACCESS_TOKEN) throw new Error("Missing env FB_PAGE_ACCESS_TOKEN (GitHub secret).");
 
   const ready = listReadyPosts();
   if (ready.length === 0) {
