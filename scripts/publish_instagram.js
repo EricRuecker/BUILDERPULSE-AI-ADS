@@ -5,7 +5,8 @@ const POSTS_DIR = "posts/instagram";
 const POSTED_DIR = path.join(POSTS_DIR, "posted");
 
 const IG_BUSINESS_ID = (process.env.IG_BUSINESS_ID || "").trim();
-const FB_PAGE_ACCESS_TOKEN = (process.env.FB_PAGE_ACCESS_TOKEN || "").trim();
+const IG_ACCESS_TOKEN = (process.env.IG_ACCESS_TOKEN || "").trim();
+
 
 function listReadyPosts() {
   if (!fs.existsSync(POSTS_DIR)) return [];
@@ -119,7 +120,7 @@ async function main() {
 
   const creationId = await igCreateContainer({
     igBusinessId: IG_BUSINESS_ID,
-    token: FB_PAGE_ACCESS_TOKEN,
+    token: IG_ACCESS_TOKEN,
     imageUrl,
     caption,
   });
@@ -128,7 +129,7 @@ async function main() {
 
   const mediaId = await igPublishContainer({
     igBusinessId: IG_BUSINESS_ID,
-    token: FB_PAGE_ACCESS_TOKEN,
+    token: IG_ACCESS_TOKEN,
     creationId,
   });
 
