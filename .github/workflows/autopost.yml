@@ -28,18 +28,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: Sanity check token (must access BuilderPulse Page)
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           echo "Checking BuilderPulse Page token..."
+      
+          # Strip hidden CR/LF that can sneak into secrets
+          PAGE_ID_CLEAN=$(printf "%s" "$FB_PAGE_ID" | tr -d '\r\n' | tr -d ' ')
+          TOKEN_CLEAN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
+      
+          # Print safe debug (no token printed)
+          echo "FB_PAGE_ID length: ${#FB_PAGE_ID} -> cleaned: ${#PAGE_ID_CLEAN}"
+          echo "FB_TOKEN length: ${#FB_PAGE_ACCESS_TOKEN} -> cleaned: ${#TOKEN_CLEAN}"
+      
+          # Use --get + data-urlencode so URL is always clean (no ?fields=...)
           code=$(curl -sS -L -o /tmp/page.json -w "%{http_code}" \
-            --data-urlencode "access_token=$FB_PAGE_ACCESS_TOKEN" \
-            "https://graph.facebook.com/v24.0/$FB_PAGE_ID?fields=id,name")
+            --get \
+            --data-urlencode "access_token=$TOKEN_CLEAN" \
+            --data-urlencode "fields=id,name" \
+            "https://graph.facebook.com/v24.0/$PAGE_ID_CLEAN")
+      
           echo "HTTP $code"
           echo "---- body ----"
           cat /tmp/page.json
+      
           if [ "$code" != "200" ]; then
             echo "Token check failed"
             exit 1
