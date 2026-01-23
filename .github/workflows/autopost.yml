@@ -28,13 +28,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-
+          
       - name: Sanity check token (must be Page)
         env:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           echo "Checking token identity..."
-          curl -s "https://graph.facebook.com/v24.0/me?access_token=$FB_PAGE_ACCESS_TOKEN"
+          code=$(curl -sS -L -o /tmp/me.json -w "%{http_code}" "https://graph.facebook.com/v24.0/me?access_token=$FB_PAGE_ACCESS_TOKEN")
+          echo "HTTP $code"
+          echo "---- body ----"
+          cat /tmp/me.json
+          if [ "$code" != "200" ]; then
+            echo "Token check failed"
+            exit 1
+          fi
 
       - name: Publish
         env:
