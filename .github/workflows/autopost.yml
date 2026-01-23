@@ -59,16 +59,40 @@ jobs:
             echo "Token check failed"
             exit 1
           fi
-      - name: Verify token has publish permissions
+
+          
+      - name: FINAL Facebook post permission test (dry-run post)
         env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
-          TOKEN_CLEAN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
-          echo "Checking token permissions..."
+          PAGE=$(printf "%s" "$FB_PAGE_ID" | tr -d '\r\n ')
+          TOKEN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
+
+          echo "Checking page identity..."
           curl -sS --get \
-            --data-urlencode "access_token=$TOKEN_CLEAN" \
-            "https://graph.facebook.com/v24.0/me/permissions" | cat
+            --data-urlencode "access_token=$TOKEN" \
+            --data-urlencode "fields=id,name" \
+            "https://graph.facebook.com/v24.0/$PAGE" | cat
           echo
+
+          echo "Attempting a small test post (this proves permissions)..."
+          code=$(curl -sS -o /tmp/post.json -w "%{http_code}" \
+            --data-urlencode "access_token=$TOKEN" \
+            --data-urlencode "message=✅ BuilderPulse autopost token verification (GitHub Actions)" \
+            "https://graph.facebook.com/v24.0/$PAGE/feed")
+
+          echo "HTTP $code"
+          cat /tmp/post.json
+          echo
+
+          if [ "$code" != "200" ]; then
+            echo "Post permission test FAILED"
+            exit 1
+          fi
+
+          echo "Post permission test PASSED"
+
 
 
 
