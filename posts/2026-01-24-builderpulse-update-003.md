@@ -1,7 +1,9 @@
 ---
 id: fb-003
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-23T02:48:02.256Z
+fb_post_id: 928820173646668_122109459687183908
 ---
 📂 Still digging through emails to find the right drawing?
 
