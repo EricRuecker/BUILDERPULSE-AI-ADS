@@ -1,0 +1,16 @@
+name: Get IG Business ID
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch IG Business ID from Page
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          echo "Requesting instagram_business_account..."
+          curl -s "https://graph.facebook.com/v24.0/${FB_PAGE_ID}?fields=instagram_business_account&access_token=${FB_PAGE_ACCESS_TOKEN}" | jq .
