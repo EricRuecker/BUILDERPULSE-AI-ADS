@@ -1,0 +1,44 @@
+name: Generate Instagram Posts
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "How many Instagram posts to generate"
+        required: false
+        default: "30"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Only keep this if your repo actually needs npm deps for the generator
+      # (the script I gave you uses only built-in Node modules)
+      # - name: Install deps
+      #   run: npm ci
+
+      - name: Generate posts
+        run: |
+          node scripts/generate_instagram_posts.js
+
+      - name: Commit and push posts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/instagram
+          git status
+          git commit -m "Generate Instagram posts" || echo "No changes to commit"
+          git push
