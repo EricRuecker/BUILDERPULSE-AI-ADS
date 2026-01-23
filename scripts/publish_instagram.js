@@ -154,11 +154,6 @@ async function main() {
   });
 
   console.log("[IG] Container created:", creationId);
-const mediaId = await igPublishWithRetry({
-  igBusinessId: IG_BUSINESS_ID,
-  token: IG_ACCESS_TOKEN,
-  creationId,
-});
 
   const mediaId = await igPublishWithRetry({
   igBusinessId: IG_BUSINESS_ID,
