@@ -6,10 +6,12 @@ on:
     - cron: "30 23 * * *"  # 3:30 PM America/Vancouver (PST)
   workflow_dispatch:
 
-
 jobs:
   post:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,12 +21,16 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install deps (if needed)
-        run: npm ci
-        # If your scripts don't need deps, remove this line
-
-      - name: Run Instagram publisher
+      - name: Post next Instagram item
         env:
           IG_BUSINESS_ID: ${{ secrets.IG_BUSINESS_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: node scripts/publish_instagram.js
+
+      - name: Commit posted move
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/instagram
+          git commit -m "Mark Instagram post as posted" || echo "No changes"
+          git push
