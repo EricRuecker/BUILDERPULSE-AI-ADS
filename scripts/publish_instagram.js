@@ -92,6 +92,33 @@ function moveToPosted(filePath) {
   return dest;
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function igPublishWithRetry({ igBusinessId, token, creationId }) {
+  const maxAttempts = 10;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const mediaId = await igPublishContainer({ igBusinessId, token, creationId });
+      return mediaId;
+    } catch (e) {
+      const msg = String(e?.message || e);
+      // IG often returns "Media ID is not available" until the container is ready
+      const isNotReady =
+        msg.includes("Media ID is not available") ||
+        msg.includes("not ready") ||
+        msg.includes("\"code\":9007") ||
+        msg.includes("2207027");
+
+      if (!isNotReady || attempt === maxAttempts) throw e;
+
+      const waitMs = 3000 * attempt; // 3s, 6s, 9s... backoff
+      console.log(`[IG] Not ready yet. Retry ${attempt}/${maxAttempts} in ${waitMs}ms...`);
+      await sleep(waitMs);
+    }
+  }
+}
+
+
 async function main() {
   if (!IG_BUSINESS_ID) throw new Error("Missing env IG_BUSINESS_ID (GitHub secret).");
   if (!IG_ACCESS_TOKEN) throw new Error("Missing env IG_ACCESS_TOKEN (GitHub secret).");
@@ -127,12 +154,18 @@ async function main() {
   });
 
   console.log("[IG] Container created:", creationId);
+const mediaId = await igPublishWithRetry({
+  igBusinessId: IG_BUSINESS_ID,
+  token: IG_ACCESS_TOKEN,
+  creationId,
+});
 
-  const mediaId = await igPublishContainer({
-    igBusinessId: IG_BUSINESS_ID,
-    token: IG_ACCESS_TOKEN,
-    creationId,
-  });
+  const mediaId = await igPublishWithRetry({
+  igBusinessId: IG_BUSINESS_ID,
+  token: IG_ACCESS_TOKEN,
+  creationId,
+});
+
 
   console.log("[IG] Published. media_id:", mediaId);
 
