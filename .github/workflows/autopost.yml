@@ -1,10 +1,12 @@
-name: BuilderPulse Autopost
+name: BuilderPulse Autopost (Facebook)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 15 * * *"  # 7:30 AM BC time (PST)
-    - cron: "30 23 * * *"  # 3:30 PM BC time (PST)
+    # GitHub cron is UTC
+    # Vancouver PST (UTC-8): 7:30 AM -> 15:30 UTC, 3:30 PM -> 23:30 UTC
+    - cron: "30 15 * * *"
+    - cron: "30 23 * * *"
 
 permissions:
   contents: write
@@ -12,17 +14,10 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Heartbeat (keep scheduler alive)
-        run: |
-          mkdir -p .github
-          date -u +"%Y-%m-%d %H:%M:%S UTC" > .github/heartbeat.txt
-          git add .github/heartbeat.txt
-          git commit -m "chore: heartbeat" || echo "No changes"
-          git push || echo "No push"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,71 +30,40 @@ jobs:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           echo "Checking BuilderPulse Page token..."
-      
-          # Strip hidden CR/LF that can sneak into secrets
+
           PAGE_ID_CLEAN=$(printf "%s" "$FB_PAGE_ID" | tr -d '\r\n' | tr -d ' ')
           TOKEN_CLEAN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
-      
-          # Print safe debug (no token printed)
+
           echo "FB_PAGE_ID length: ${#FB_PAGE_ID} -> cleaned: ${#PAGE_ID_CLEAN}"
           echo "FB_TOKEN length: ${#FB_PAGE_ACCESS_TOKEN} -> cleaned: ${#TOKEN_CLEAN}"
-      
-          # Use --get + data-urlencode so URL is always clean (no ?fields=...)
+
           code=$(curl -sS -L -o /tmp/page.json -w "%{http_code}" \
             --get \
             --data-urlencode "access_token=$TOKEN_CLEAN" \
             --data-urlencode "fields=id,name" \
             "https://graph.facebook.com/v24.0/$PAGE_ID_CLEAN")
-      
+
           echo "HTTP $code"
           echo "---- body ----"
           cat /tmp/page.json
-      
+
           if [ "$code" != "200" ]; then
             echo "Token check failed"
             exit 1
           fi
 
-          
-      - name: FINAL Facebook post permission test (dry-run post)
+      - name: Publish next Facebook post
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: node scripts/publish.js
+
+      - name: Commit posted move (if any)
         run: |
-          PAGE=$(printf "%s" "$FB_PAGE_ID" | tr -d '\r\n ')
-          TOKEN=$(printf "%s" "$FB_PAGE_ACCESS_TOKEN" | tr -d '\r\n')
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts
+          git commit -m "chore: mark Facebook post as posted" || echo "No changes to commit"
+          git push
 
-          echo "Checking page identity..."
-          curl -sS --get \
-            --data-urlencode "access_token=$TOKEN" \
-            --data-urlencode "fields=id,name" \
-            "https://graph.facebook.com/v24.0/$PAGE" | cat
-          echo
-
-          echo "Attempting a small test post (this proves permissions)..."
-          code=$(curl -sS -o /tmp/post.json -w "%{http_code}" \
-            --data-urlencode "access_token=$TOKEN" \
-            --data-urlencode "message=✅ BuilderPulse autopost token verification (GitHub Actions)" \
-            "https://graph.facebook.com/v24.0/$PAGE/feed")
-
-          echo "HTTP $code"
-          cat /tmp/post.json
-          echo
-
-          if [ "$code" != "200" ]; then
-            echo "Post permission test FAILED"
-            exit 1
-          fi
-
-          echo "Post permission test PASSED"
-
-
-
-
-      - name: Publish
-        env:
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
-        run: |
-          node scripts/publish.js
 
