@@ -2,8 +2,8 @@ name: Autopost Instagram
 
 on:
   schedule:
-    - cron: "30 15 * * *"  # 7:30 AM America/Vancouver (PST)
-    - cron: "30 23 * * *"  # 3:30 PM America/Vancouver (PST)
+    - cron: "30 14 * * *"  # 7:30 AM America/Vancouver (PST)
+    - cron: "30 22 * * *"  # 3:30 PM America/Vancouver (PST)
   workflow_dispatch:
 
 jobs:
