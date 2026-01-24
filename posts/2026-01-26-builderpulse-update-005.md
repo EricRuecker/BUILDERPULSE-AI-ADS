@@ -1,7 +1,9 @@
 ---
 id: fb-005
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-24T00:31:15.098Z
+fb_post_id: 928820173646668_122109628335183908
 ---
 
 ⏱️ Time tracking shouldn’t be a headache.
