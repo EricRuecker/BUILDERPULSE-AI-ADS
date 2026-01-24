@@ -1,0 +1,39 @@
+name: Generate LinkedIn Ads (Posts)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly refresh (UTC). Vancouver PST (UTC-8): Sunday 6:10 AM -> 14:10 UTC
+    - cron: "10 14 * * 0"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate 30 LinkedIn posts
+        env:
+          COUNT: "30"
+          SITE_URL: "https://www.builderpulse.ca"
+          BRAND: "BuilderPulseAI"
+        run: node scripts/generate_linkedin_posts.js
+
+      - name: Commit generated LinkedIn posts (if any)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add posts/linkedin
+          git commit -m "chore: generate LinkedIn posts" || echo "No changes to commit"
+          git push
