@@ -1,0 +1,42 @@
+name: BuilderPulse Autopost (LinkedIn)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub cron is UTC
+    # Vancouver PST (UTC-8): 7:30 AM -> 15:30 UTC, 3:30 PM -> 23:30 UTC
+    - cron: "30 15 * * *"
+    - cron: "30 23 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Publish next LinkedIn post
+        env:
+          LINKEDIN_AUTHOR_URN: ${{ secrets.LINKEDIN_AUTHOR_URN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          # Optional future use:
+          LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
+        run: node scripts/publish_linkedin.js
+
+      - name: Commit posted move (if any)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts
+          git commit -m "chore: mark LinkedIn post as posted" || echo "No changes to commit"
+          git push
