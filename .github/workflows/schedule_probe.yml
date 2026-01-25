@@ -1,1 +1,17 @@
-1
+name: Schedule Probe
+
+on:
+  schedule:
+    - cron: "* * * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print time + trigger
+        run: |
+          echo "UTC:"
+          date -u
+          echo "Event:"
+          echo "${{ github.event_name }}"
