@@ -1,7 +1,9 @@
 ---
 id: fb-008
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-25T15:40:12.854Z
+fb_post_id: 928820173646668_122109940665183908
 ---
 
 📱 Your office and field should always be on the same page.
