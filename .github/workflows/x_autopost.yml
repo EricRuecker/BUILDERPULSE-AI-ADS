@@ -3,8 +3,8 @@ name: BuilderPulse X Autopost
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 14 * * *"  # 7:30 AM BC (PST)
-    - cron: "30 22 * * *"  # 3:30 PM BC (PST)
+    - cron: "30 15 * * *"  # 7:30 AM BC (PST)
+    - cron: "30 23 * * *"  # 3:30 PM BC (PST)
 
 permissions:
   contents: write
