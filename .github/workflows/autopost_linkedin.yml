@@ -5,8 +5,8 @@ on:
   schedule:
     # GitHub cron is UTC
     # Vancouver PST (UTC-8): 7:30 AM -> 15:30 UTC, 3:30 PM -> 23:30 UTC
-    - cron: "30 15 * * *"
-    - cron: "30 23 * * *"
+    - cron: "30 1 * * *"
+    - cron: "30 2 * * *"
 
 permissions:
   contents: write
