@@ -62,10 +62,18 @@ async function igCreateContainer({ igBusinessId, token, imageUrl, caption }) {
 
   const json = await res.json();
   if (!res.ok) {
-    throw new Error(`[IG] Create container failed (${res.status}): ${JSON.stringify(json)}`);
-  }
-  return json.id; // creation_id
+    const detail = json?.detail || "";
+    const status = res.status;
+  
+    // X duplicate tweet protection
+    if (status === 403 && /duplicate content/i.test(detail)) {
+      console.log("[X] Duplicate content detected — treating as already posted and skipping.");
+      return { skipped: true, reason: "duplicate" };
+    }
+  
+    throw new Error(JSON.stringify(json));
 }
+
 
 async function igPublishContainer({ igBusinessId, token, creationId }) {
   const params = new URLSearchParams({
