@@ -1,7 +1,9 @@
 ---
 id: fb-012
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-27T15:49:37.770Z
+fb_post_id: 928820173646668_122110394265183908
 ---
 
 📄 Chasing paperwork is a waste of skilled time.
