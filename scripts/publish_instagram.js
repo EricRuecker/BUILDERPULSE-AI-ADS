@@ -53,12 +53,10 @@ async function igCreateContainer({ igBusinessId, token, imageUrl, videoUrl, capt
     access_token: token,
   });
 
-  if (videoUrl) {
-    params.set("media_type", "REELS");
-    params.set("video_url", videoUrl);
-  } else {
-    params.set("image_url", imageUrl);
-  }
+console.log("[IG] Waiting for media processing...");
+await igWaitUntilReady({ token: IG_ACCESS_TOKEN, creationId });
+console.log("[IG] Media ready.");
+
 
   const res = await fetch(`https://graph.facebook.com/v24.0/${igBusinessId}/media`, {
     method: "POST",
@@ -74,19 +72,27 @@ async function igCreateContainer({ igBusinessId, token, imageUrl, videoUrl, capt
 
 // For REELS, explicitly wait for container processing to finish
 async function igWaitUntilReady({ token, creationId }) {
-  const maxAttempts = 30; // ~30 * 5s = 150s
+  const maxAttempts = 60; // ~60 * 5s = 300s (5 min)
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const res = await fetch(
-      `https://graph.facebook.com/v24.0/${creationId}?fields=status_code,status&access_token=${token}`
+      `https://graph.facebook.com/v24.0/${creationId}?fields=status_code&access_token=${token}`
     );
     const json = await res.json();
 
     const statusCode = json?.status_code;
+
     if (statusCode === "FINISHED") return;
 
     if (statusCode === "ERROR") {
       throw new Error(`[IG] Container processing ERROR: ${JSON.stringify(json)}`);
     }
+
+    // IN_PROGRESS or temporarily missing right after creation
+    await sleep(5000);
+  }
+  throw new Error("[IG] Timed out waiting for container to finish processing.");
+}
+
 
     // Still processing
     await sleep(5000);
