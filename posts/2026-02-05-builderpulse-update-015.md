@@ -1,7 +1,9 @@
 ---
 id: fb-015
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-28T22:54:55.259Z
+fb_post_id: 928820173646668_122110603173183908
 ---
 
 💸 Payroll errors cost more than money — they cost trust.
