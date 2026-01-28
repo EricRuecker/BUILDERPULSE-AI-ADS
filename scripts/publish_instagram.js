@@ -53,10 +53,12 @@ async function igCreateContainer({ igBusinessId, token, imageUrl, videoUrl, capt
     access_token: token,
   });
 
-console.log("[IG] Waiting for media processing...");
-await igWaitUntilReady({ token: IG_ACCESS_TOKEN, creationId });
-console.log("[IG] Media ready.");
-
+  if (videoUrl) {
+    params.set("media_type", "REELS"); // or "VIDEO"
+    params.set("video_url", videoUrl);
+  } else {
+    params.set("image_url", imageUrl);
+  }
 
   const res = await fetch(`https://graph.facebook.com/v24.0/${igBusinessId}/media`, {
     method: "POST",
@@ -70,9 +72,9 @@ console.log("[IG] Media ready.");
   return json.id; // creation_id
 }
 
-// For REELS, explicitly wait for container processing to finish
+// Wait for BOTH images and reels to be ready before publishing
 async function igWaitUntilReady({ token, creationId }) {
-  const maxAttempts = 60; // ~60 * 5s = 300s (5 min)
+  const maxAttempts = 60; // 60 * 5s = 300s (5 min)
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const res = await fetch(
       `https://graph.facebook.com/v24.0/${creationId}?fields=status_code&access_token=${token}`
@@ -88,13 +90,6 @@ async function igWaitUntilReady({ token, creationId }) {
     }
 
     // IN_PROGRESS or temporarily missing right after creation
-    await sleep(5000);
-  }
-  throw new Error("[IG] Timed out waiting for container to finish processing.");
-}
-
-
-    // Still processing
     await sleep(5000);
   }
   throw new Error("[IG] Timed out waiting for container to finish processing.");
@@ -140,14 +135,18 @@ async function main() {
   const { meta } = parseFrontMatter(raw);
 
   const caption = meta.caption || "";
+
   const imageUrl = meta.image_url;
-  const videoUrl = meta.video_url;
+  let videoUrl = meta.video_url;
+
+  // Safety net: if someone accidentally puts an mp4 in image_url, treat it as video_url
+  if (!videoUrl && typeof imageUrl === "string" && /\.mp4(\?.*)?$/i.test(imageUrl)) {
+    videoUrl = imageUrl;
+  }
 
   if (videoUrl) {
     if (!String(videoUrl).startsWith("https://")) {
-      throw new Error(
-        `Post ${path.basename(nextFile)} has video_url but it is not a public https URL.`
-      );
+      throw new Error(`Post ${path.basename(nextFile)} has video_url but it is not a public https URL.`);
     }
   } else {
     if (!imageUrl || !String(imageUrl).startsWith("https://")) {
@@ -171,12 +170,9 @@ async function main() {
 
   console.log("[IG] Container created:", creationId);
 
-  // Only needed for video/reels; harmless for image but we’ll keep it conditional
-  if (videoUrl) {
-    console.log("[IG] Waiting for Reel processing...");
-    await igWaitUntilReady({ token: IG_ACCESS_TOKEN, creationId });
-    console.log("[IG] Reel ready.");
-  }
+  console.log("[IG] Waiting for media processing...");
+  await igWaitUntilReady({ token: IG_ACCESS_TOKEN, creationId });
+  console.log("[IG] Media ready.");
 
   const mediaId = await igPublishContainer({
     igBusinessId: IG_BUSINESS_ID,
