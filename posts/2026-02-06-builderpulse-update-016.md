@@ -1,7 +1,9 @@
 ---
 id: fb-016
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-29T15:59:07.559Z
+fb_post_id: 928820173646668_122110728999183908
 ---
 
 🧰 Using five tools to manage one job?
