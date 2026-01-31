@@ -1,7 +1,9 @@
 ---
 id: fb-020
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-31T15:44:47.660Z
+fb_post_id: 928820173646668_122111045157183908
 ---
 
 👀 If you can’t see what’s happening on a job, you can’t control it.
