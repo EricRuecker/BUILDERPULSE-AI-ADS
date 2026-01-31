@@ -1,7 +1,9 @@
 ---
 id: fb-021
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-01-31T22:49:51.430Z
+fb_post_id: 928820173646668_122111094729183908
 ---
 
 🔁 Change happens — chaos doesn’t have to.
