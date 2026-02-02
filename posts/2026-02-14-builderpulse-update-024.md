@@ -1,7 +1,9 @@
 ---
 id: fb-024
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-02T15:56:21.004Z
+fb_post_id: 928820173646668_122111391561183908
 ---
 
 📱 Need job info while you’re on site?
