@@ -1,7 +1,9 @@
 ---
 id: fb-025
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-03T16:09:47.676Z
+fb_post_id: 928820173646668_122111545137183908
 ---
 
 ⚠️ Small mistakes add up fast in construction.
