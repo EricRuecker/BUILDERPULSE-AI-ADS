@@ -1,7 +1,9 @@
 ---
 id: fb-026
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-03T22:58:02.775Z
+fb_post_id: 928820173646668_122111587209183908
 ---
 
 🏗️ As your company grows, systems matter more than ever.
