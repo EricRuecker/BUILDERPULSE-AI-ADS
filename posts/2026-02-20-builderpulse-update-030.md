@@ -1,9 +1,7 @@
 ---
 id: fb-030
 platforms: [facebook]
-status: posted
-posted_at: 2026-02-05T22:56:25.100Z
-fb_post_id: 928820173646668_122111918211183908
+status: ready
 ---
 
 ✅ Confidence comes from knowing your numbers and documents are solid.

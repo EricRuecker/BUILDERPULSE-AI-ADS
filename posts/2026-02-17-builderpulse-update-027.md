@@ -1,9 +1,7 @@
 ---
 id: fb-027
 platforms: [facebook]
-status: posted
-posted_at: 2026-02-04T16:05:59.041Z
-fb_post_id: 928820173646668_122111701467183908
+status: ready
 ---
 
 🧷 Duct-taped systems break under pressure.

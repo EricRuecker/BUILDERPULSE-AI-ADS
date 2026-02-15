@@ -1,9 +1,7 @@
 ---
 id: fb-002
 platforms: [facebook]
-status: posted
-posted_at: 2026-01-23T01:42:05.216Z
-fb_post_id: 928820173646668_122109454305183908
+status: ready
 ---
 🔨 Still running your jobs with spreadsheets, texts, and paper?
 

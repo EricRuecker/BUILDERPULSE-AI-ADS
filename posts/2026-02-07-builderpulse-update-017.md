@@ -1,9 +1,7 @@
 ---
 id: fb-017
 platforms: [facebook]
-status: posted
-posted_at: 2026-01-29T22:55:32.242Z
-fb_post_id: 928820173646668_122110770783183908
+status: ready
 ---
 
 ⚠️ Missed details are expensive — especially on busy jobs.

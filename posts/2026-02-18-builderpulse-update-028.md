@@ -1,9 +1,7 @@
 ---
 id: fb-028
 platforms: [facebook]
-status: posted
-posted_at: 2026-02-04T22:53:28.083Z
-fb_post_id: 928820173646668_122111734491183908
+status: ready
 ---
 
 💰 Profitable jobs start with visibility.

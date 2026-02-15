@@ -1,9 +1,7 @@
 ---
 id: fb-006
 platforms: [facebook]
-status: posted
-posted_at: 2026-01-24T17:05:36.506Z
-fb_post_id: 928820173646668_122109753531183908
+status: ready
 ---
 
 💰 Cost overruns don’t happen all at once — they creep in quietly.
