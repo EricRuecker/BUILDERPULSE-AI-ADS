@@ -1,4 +1,4 @@
-name: Reset Autopost Status (by status column)
+name: Reset Post Status (frontmatter)
 
 on:
   workflow_dispatch:
@@ -15,33 +15,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.11"
+          node-version: "20"
 
-      - name: Reset posted -> ready in posts queue files
-        run: python scripts/reset_post_status.py
+      - name: Reset statuses
+        run: node scripts/reset_status.js
 
-      - name: Commit & push (safe push)
-        shell: bash
+      - name: Commit & push
         run: |
-          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add posts scripts/reset_post_status.py || true
+          git add posts
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
 
-          git commit -m "Reset autopost statuses (posted -> ready)"
+          git commit -m "Reset all post statuses to ready"
 
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD:main && break
-            echo "Push failed, retrying ($i)..."
             sleep 3
           done
 
