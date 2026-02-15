@@ -1,10 +1,10 @@
-name: Reset Autopost Status (Move posted -> ready)
+name: Reset Autopost Status (X/Facebook/Instagram)
 
 on:
   workflow_dispatch:
     inputs:
       platform:
-        description: "Which platform to reset (all, instagram, facebook, x, linkedin)"
+        description: "Which platform to reset (all, instagram, facebook, x)"
         required: true
         default: "all"
         type: choice
@@ -13,7 +13,6 @@ on:
           - instagram
           - facebook
           - x
-          - linkedin
 
 jobs:
   reset:
@@ -27,13 +26,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Reset queue (move posted back to ready)
+      - name: Move posted -> ready
         shell: bash
         run: |
           set -euo pipefail
 
-          reset_platform() {
-            local base="$1"   # e.g. posts/instagram
+          reset_platform () {
+            local base="$1"          # posts/instagram
             local posted="$base/posted"
 
             if [ ! -d "$base" ]; then
@@ -59,7 +58,7 @@ jobs:
               mv "$f" "$base/"
             done
 
-            # Optional: remove empty posted dir so it’s obvious it was reset
+            # optional cleanup if empty
             rmdir "$posted" 2>/dev/null || true
           }
 
@@ -68,14 +67,13 @@ jobs:
           if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "instagram" ]; then
             reset_platform "posts/instagram"
           fi
+
           if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "facebook" ]; then
             reset_platform "posts/facebook"
           fi
+
           if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "x" ]; then
             reset_platform "posts/x"
-          fi
-          if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "linkedin" ]; then
-            reset_platform "posts/linkedin"
           fi
 
       - name: Commit & push (safe push)
@@ -87,7 +85,6 @@ jobs:
 
           git add posts || true
 
-          # If nothing changed, exit cleanly
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
@@ -95,7 +92,6 @@ jobs:
 
           git commit -m "Reset autopost status (move posted back to ready)"
 
-          # Avoid "fetch first" when other workflows committed to main
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD:main && break
             echo "Push failed, retrying ($i)..."
