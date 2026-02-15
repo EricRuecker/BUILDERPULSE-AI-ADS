@@ -1,7 +1,9 @@
 ---
 id: fb-001
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-15T01:33:12.755Z
+fb_post_id: 928820173646668_122113406697183908
 ---
 
 🚀 BuilderPulseAI is live.
