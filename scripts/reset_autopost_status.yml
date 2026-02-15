@@ -1,0 +1,103 @@
+name: Reset Autopost Status (Move posted -> ready)
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: "Which platform to reset (all, instagram, facebook, x, linkedin)"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - instagram
+          - facebook
+          - x
+          - linkedin
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reset queue (move posted back to ready)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          reset_platform() {
+            local base="$1"   # e.g. posts/instagram
+            local posted="$base/posted"
+
+            if [ ! -d "$base" ]; then
+              echo "[SKIP] $base does not exist"
+              return 0
+            fi
+
+            if [ ! -d "$posted" ]; then
+              echo "[SKIP] $posted does not exist"
+              return 0
+            fi
+
+            shopt -s nullglob
+            files=("$posted"/*)
+
+            if [ ${#files[@]} -eq 0 ]; then
+              echo "[OK] Nothing to reset in $posted"
+              return 0
+            fi
+
+            echo "[RESET] Moving ${#files[@]} file(s): $posted -> $base"
+            for f in "${files[@]}"; do
+              mv "$f" "$base/"
+            done
+
+            # Optional: remove empty posted dir so it’s obvious it was reset
+            rmdir "$posted" 2>/dev/null || true
+          }
+
+          PLATFORM="${{ inputs.platform }}"
+
+          if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "instagram" ]; then
+            reset_platform "posts/instagram"
+          fi
+          if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "facebook" ]; then
+            reset_platform "posts/facebook"
+          fi
+          if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "x" ]; then
+            reset_platform "posts/x"
+          fi
+          if [ "$PLATFORM" = "all" ] || [ "$PLATFORM" = "linkedin" ]; then
+            reset_platform "posts/linkedin"
+          fi
+
+      - name: Commit & push (safe push)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add posts || true
+
+          # If nothing changed, exit cleanly
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Reset autopost status (move posted back to ready)"
+
+          # Avoid "fetch first" when other workflows committed to main
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && break
+            echo "Push failed, retrying ($i)..."
+            sleep 3
+          done
