@@ -1,7 +1,9 @@
 ---
 id: fb-004
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-16T16:01:58.037Z
+fb_post_id: 928820173646668_122113626033183908
 ---
 
 👷 If running the business means working nights and weekends, something’s broken.
