@@ -1,7 +1,9 @@
 ---
 id: fb-007
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-17T16:13:50.835Z
+fb_post_id: 928820173646668_122113764645183908
 ---
 
 📈 Adding crews without better systems is how margins disappear.
