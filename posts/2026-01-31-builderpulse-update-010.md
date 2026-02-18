@@ -1,7 +1,9 @@
 ---
 id: fb-010
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-18T23:00:49.955Z
+fb_post_id: 928820173646668_122113945035183908
 ---
 
 🚧 The bigger the jobs get, the harder it is to stay organized.
