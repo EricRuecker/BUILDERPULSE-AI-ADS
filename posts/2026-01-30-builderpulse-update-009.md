@@ -1,7 +1,9 @@
 ---
 id: fb-009
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-18T16:14:59.159Z
+fb_post_id: 928820173646668_122113908861183908
 ---
 
 🧠 If admin work is stealing time from real work, it’s costing you money.
