@@ -1,7 +1,9 @@
 ---
 id: fb-011
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-19T16:09:57.377Z
+fb_post_id: 928820173646668_122114035689183908
 ---
 
 🔨 Software built by people who’ve actually run jobs makes a difference.
