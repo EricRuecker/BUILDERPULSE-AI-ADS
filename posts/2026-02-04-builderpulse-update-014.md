@@ -1,7 +1,9 @@
 ---
 id: fb-014
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-20T22:55:43.884Z
+fb_post_id: 928820173646668_122114247885183908
 ---
 
 📄 Paper systems don’t scale — they slow you down.
