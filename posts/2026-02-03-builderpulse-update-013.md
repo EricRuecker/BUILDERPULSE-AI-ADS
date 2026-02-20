@@ -1,7 +1,9 @@
 ---
 id: fb-013
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-20T15:58:23.082Z
+fb_post_id: 928820173646668_122114189865183908
 ---
 
 📐 Ever build off the wrong drawing version?
