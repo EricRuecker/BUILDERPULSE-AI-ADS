@@ -1,7 +1,9 @@
 ---
 id: fb-018
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-22T22:52:25.246Z
+fb_post_id: 928820173646668_122114537739183908
 ---
 
 🏢 When the office is overloaded, jobs suffer.
