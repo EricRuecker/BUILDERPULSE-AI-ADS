@@ -1,7 +1,9 @@
 ---
 id: fb-019
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-23T23:08:43.800Z
+fb_post_id: 928820173646668_122114682057183908
 ---
 
 👷 New hires shouldn’t slow the whole job down.
