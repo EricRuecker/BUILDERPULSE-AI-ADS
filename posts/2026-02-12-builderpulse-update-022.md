@@ -1,7 +1,9 @@
 ---
 id: fb-022
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-25T16:39:54.398Z
+fb_post_id: 928820173646668_122114942721183908
 ---
 
 🔥 Constant firefighting usually means broken systems.
