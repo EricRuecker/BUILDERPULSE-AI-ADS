@@ -1,7 +1,9 @@
 ---
 id: fb-023
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-25T23:01:26.692Z
+fb_post_id: 928820173646668_122114983941183908
 ---
 
 🧭 Running jobs without clear visibility is stressful.
