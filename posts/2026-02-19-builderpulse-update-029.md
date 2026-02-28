@@ -1,7 +1,9 @@
 ---
 id: fb-029
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-02-28T22:47:45.355Z
+fb_post_id: 928820173646668_122115371043183908
 ---
 
 🏢 An organized office keeps jobs moving.
