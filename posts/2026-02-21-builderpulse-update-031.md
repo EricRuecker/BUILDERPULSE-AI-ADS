@@ -1,7 +1,9 @@
 ---
 id: fb-031
 platforms: [facebook]
-status: ready
+status: posted
+posted_at: 2026-03-01T22:50:07.148Z
+fb_post_id: 928820173646668_122115510021183908
 ---
 
 🚀 If you’re ready to run jobs with less chaos, it’s time.
